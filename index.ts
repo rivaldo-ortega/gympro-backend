@@ -6,10 +6,23 @@ import {registerRoutes} from './routes'
 //cors
 import cors from 'cors'
 
+const allowedOrigins = [
+  'https://gympro-client.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:3000',
+]
+
 const app = express()
 app.use(
   cors({
-    origin: true, // tu frontend
+    origin: (origin, callback) => {
+      console.log('origin', origin)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true)
+      } else {
+        callback(new Error('Not allowed by CORS'))
+      }
+    },
     credentials: true, // si usas cookies o sesiones
   }),
 )
