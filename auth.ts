@@ -36,6 +36,8 @@ export function setupAuth(app: Express) {
     saveUninitialized: false,
     cookie: {
       maxAge: 24 * 60 * 60 * 1000, // 24 horas
+      secure: true, // Solo enviar cookies por HTTPS en producción
+      sameSite: 'none', // Permitir cookies en solicitudes de terceros
     },
     store: storage.sessionStore,
   }
