@@ -1,3 +1,4 @@
+import './tasks'
 import * as dotenv from 'dotenv'
 dotenv.config()
 
@@ -18,7 +19,6 @@ app.set('trust proxy', 1)
 app.use(
   cors({
     origin: (origin, callback) => {
-      console.log('origin', origin)
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true)
       } else {

@@ -714,7 +714,7 @@ export class MemStorage implements IStorage {
         activityType: 'payment_created',
         description: `${member.firstName} ${
           member.lastName
-        } registró un pago de ${(payment.amount / 100).toFixed(2)} soles por ${
+        } registró un pago de ${payment.amount.toFixed(2)} soles por ${
           plan.name
         }`,
         timestamp: new Date(),
@@ -1390,9 +1390,9 @@ export class DatabaseStorage implements IStorage {
         activityType: 'payment_created',
         description: `${member.firstName} ${
           member.lastName
-        } registró un pago de ${(newPayment.amount / 100).toFixed(
-          2,
-        )} soles por ${plan.name}`,
+        } registró un pago de ${newPayment.amount.toFixed(2)} soles por ${
+          plan.name
+        }`,
         timestamp: new Date(),
         userId: null,
       })
@@ -1450,7 +1450,7 @@ export class DatabaseStorage implements IStorage {
         }
 
         // Asegurar que la fecha no sea el mismo día (añadir 1 día más por seguridad)
-        expiryDate.setDate(expiryDate.getDate() + 1)
+        expiryDate.setDate(expiryDate.getDate())
 
         console.log(
           `Actualizando estado de miembro a activo: ${member.firstName} ${

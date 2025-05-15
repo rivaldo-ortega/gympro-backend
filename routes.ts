@@ -1058,7 +1058,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 status: 'pending',
                 joinDate: new Date().toISOString().split('T')[0],
               })
-              console.log('Created new member:', member)
+
               memberId = member.id
             } catch (memberError) {
               console.error('Error creating member:', memberError)
