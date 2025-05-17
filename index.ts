@@ -1,4 +1,4 @@
-/* import './tasks' */
+import "./tasks";
 import * as dotenv from "dotenv";
 dotenv.config();
 
