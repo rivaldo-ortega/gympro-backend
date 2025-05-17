@@ -1,76 +1,76 @@
-import './tasks'
-import * as dotenv from 'dotenv'
-dotenv.config()
+/* import './tasks' */
+import * as dotenv from "dotenv";
+dotenv.config();
 
-import express, {type Request, Response, NextFunction} from 'express'
-import {registerRoutes} from './routes'
+import express, { type Request, Response, NextFunction } from "express";
+import { registerRoutes } from "./routes";
 //cors
-import cors from 'cors'
+import cors from "cors";
 
 const allowedOrigins = [
-  'https://gympro-client.vercel.app',
-  'http://localhost:5173',
-  'http://localhost:3000',
-]
+  "https://gympro-client.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:3000",
+];
 
-const app = express()
-app.set('trust proxy', 1)
+const app = express();
+app.set("trust proxy", 1);
 
 app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true)
+        callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS'))
+        callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true, // si usas cookies o sesiones
   }),
-)
-app.use(express.json({limit: '10mb'}))
-app.use(express.urlencoded({extended: false, limit: '10mb'}))
+);
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: false, limit: "10mb" }));
 
 app.use((req, res, next) => {
-  const start = Date.now()
-  const path = req.path
-  let capturedJsonResponse: Record<string, any> | undefined = undefined
+  const start = Date.now();
+  const path = req.path;
+  let capturedJsonResponse: Record<string, any> | undefined = undefined;
 
-  const originalResJson = res.json
+  const originalResJson = res.json;
   res.json = function (bodyJson, ...args) {
-    capturedJsonResponse = bodyJson
-    return originalResJson.apply(res, [bodyJson, ...args])
-  }
+    capturedJsonResponse = bodyJson;
+    return originalResJson.apply(res, [bodyJson, ...args]);
+  };
 
-  res.on('finish', () => {
-    const duration = Date.now() - start
-    if (path.startsWith('/api')) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`
+  res.on("finish", () => {
+    const duration = Date.now() - start;
+    if (path.startsWith("/api")) {
+      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
       if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`
+        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
       }
 
       if (logLine.length > 80) {
-        logLine = logLine.slice(0, 79) + '…'
+        logLine = logLine.slice(0, 79) + "…";
       }
 
       /* log(logLine); */
-      console.log(logLine)
+      console.log(logLine);
     }
-  })
+  });
 
-  next()
-})
-;(async () => {
-  const server = await registerRoutes(app)
+  next();
+});
+(async () => {
+  const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500
-    const message = err.message || 'Internal Server Error'
+    const status = err.status || err.statusCode || 500;
+    const message = err.message || "Internal Server Error";
 
-    res.status(status).json({message})
-    throw err
-  })
+    res.status(status).json({ message });
+    throw err;
+  });
 
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
@@ -81,22 +81,22 @@ app.use((req, res, next) => {
     serveStatic(app);
   } */
   // Serve static files from the dist/public directory
-  if (app.get('env') === 'production') {
-    app.use(express.static('dist'))
+  if (app.get("env") === "production") {
+    app.use(express.static("dist"));
   }
 
   // ALWAYS serve the app on port 5000
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
-  const port = 5000
+  const port = 5000;
   server.listen(
     {
       port,
-      host: '0.0.0.0',
+      host: "0.0.0.0",
       reusePort: true,
     },
     () => {
-      console.log(`serving on port ${port}`)
+      console.log(`serving on port ${port}`);
     },
-  )
-})()
+  );
+})();
