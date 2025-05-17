@@ -6,7 +6,7 @@ import { members } from "./schema";
 cron.schedule("0 0 * * *", async () => {
   console.log("Members status updated", new Date().toISOString());
 
-  await db.execute(
+  /* await db.execute(
     sql`UPDATE ${members}
         SET status = CASE
           WHEN expiry_date IS NULL THEN 'expired
@@ -14,5 +14,5 @@ cron.schedule("0 0 * * *", async () => {
           WHEN expiry_date BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '3 days' THEN 'about-expire'
           ELSE 'expired'
         END`,
-  );
+  ); */
 });
