@@ -3,7 +3,7 @@ import cron from "node-cron";
 import { sql } from "drizzle-orm";
 import { members } from "./schema";
 
-cron.schedule("0 0 * * *", async () => {
+cron.schedule("0 * * * *", async () => {
   try {
     console.log("Members status updated", new Date().toISOString());
     await db.execute(
